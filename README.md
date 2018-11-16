@@ -4,6 +4,9 @@ Implementation of a viterbi algorithm on bigram and trigram word processing.
 ### (a) Explain how this model of keystroke errors can be cast as a Hidden Markov Model.
 Which are the hidden states, the observations, the state transition probabilities,
 and the observation probabilities?
+
+The hidden state is the intended letter, the observations are the letters seen, which may be the actual letter or a neighbouring letter. The state transition probabilities is the likelihood of a certain letter following another given letter. Observation probabilities is the likelihood of seeing a certain letter given the intended letter/hidden state.
+
 ### (b) The ViterbiBigramDecoder program contains a code skeleton for applying the Viterbi
 algorithm to the text correction problem, making the text more legible. Extend the code
 so that it works correctly (look for the comments YOUR CODE HERE and REPLACE THE

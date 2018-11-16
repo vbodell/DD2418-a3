@@ -75,12 +75,32 @@ class ViterbiBigramDecoder(object):
         # Induction step
 
         # TODO YOUR CODE HERE
+        for ndx in range(1, len(index)):
+            obs = index[ndx] # index of observed character
+            for char in range(Key.NUMBER_OF_CHARS):
+                maxProb = -float("inf")
+                maxNdx = -1
 
+                for prevState in range(Key.NUMBER_OF_CHARS):
+                    if self.v[ndx-1,prevState] + self.a[prevState,char] > maxProb:
+                        maxProb = self.v[ndx-1,prevState] + self.a[prevState,char]
+                        maxNdx = prevState
+
+                self.v[ndx,char] = maxProb + self.b[obs,char]
+                self.backptr[ndx,char] = maxNdx
         # Finally return the result
 
         # REPLACE THE LINE BELOW WITH YOUR CODE
+        mostLikelyString = ""
+        prevState = self.backptr[len(index)-1,Key.START_END]
+        curNdx = len(index) - 2
 
-        return ''
+        while curNdx >= 0:
+            mostLikelyString += Key.index_to_char(prevState)
+            prevState = self.backptr[curNdx,prevState]
+            curNdx -= 1
+
+        return mostLikelyString[::-1]
 
 
     # ------------------------------------------------------
