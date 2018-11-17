@@ -69,17 +69,42 @@ class ViterbiTrigramDecoder(object):
 
         # Initialization
 
-        # TODO YOUR CODE HERE
+        # YOUR CODE HERE
+        self.backptr[0,:,:] = Key.START_END
+        self.v[0,Key.START_END,:] = self.a[Key.START_END,Key.START_END,:] + self.b[index[0],:]
 
         # Induction step
 
         # YOUR CODE HERE
+        for ndx in range(1, len(index)):
+            for char in range(Key.NUMBER_OF_CHARS):
+                for j in range(Key.NUMBER_OF_CHARS):
+                    maxProb = -float("inf")
+                    maxPrev = -1
+
+                    for prev in range(Key.NUMBER_OF_CHARS):
+                        if self.v[ndx-1,prev,j] + self.a[prev,j,char] > maxProb:
+                            maxProb = self.v[ndx-1,prev,j] + self.a[prev,j,char]
+                            maxPrev = prev
+
+                    self.v[ndx,j,char] = maxProb + self.b[index[ndx],char]
+                    self.backptr[ndx,j,char] = maxPrev
 
         # Finally return the result
+        mostLikelyString = ""
+        curNdx = len(index) - 2
+        prevStateEnd = self.backptr[len(index)-1,Key.START_END,Key.START_END]
+        prevStateBgn = self.backptr[curNdx,prevStateEnd,Key.START_END]
 
+        while curNdx > 0:
+            curNdx -= 1
+            mostLikelyString += Key.index_to_char(prevStateEnd)
+            tmp = prevStateBgn
+            prevStateBgn = self.backptr[curNdx,prevStateBgn,prevStateEnd]
+            prevStateEnd = tmp
         # REPLACE THE LINE BELOW WITH YOUR CODE
 
-        return ''
+        return mostLikelyString[::-1]
 
 
 
